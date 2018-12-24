@@ -1,0 +1,22 @@
+@import '../../node_modules/bootstrap/scss/bootstrap.scss';
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+.form {
+  width: 30%;
+  margin: 25px auto;
+}
+
+.thumbnail .caption-full {
+  padding: 9px;
+}
+
+.thumbnail {
+  padding: 0;
+}
+
+.thumbnail img {
+  width: 100%;
+}
