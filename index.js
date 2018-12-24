@@ -8,6 +8,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const Campground = require('./models/campground');
+const seedDB = require('./seeds');
+
 // Create the 'yelp_camp' db
 mongoose.connect(
   'mongodb://localhost:27017/yelp_camp',
@@ -19,34 +22,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
 
-// SCHEMA SETUP
-const campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String,
-});
-
-const Campground = mongoose.model('Campground', campgroundSchema);
-
-/*
- * Campground.create(
- *   {
- *     name: "Moray Towers",
- *     image:
- *       "https://vignette.wikia.nocookie.net/splatoon/images/2/21/200px-MorayTowers.png/revision/latest?cb=20180415200148",
- *     description:
- *       "The rent here is either very high... or very low.",
- *   },
- *   function(err, campground) {
- *     if (err) {
- *       console.log(err);
- *     } else {
- *       console.log("Newly created campground:");
- *       console.log(campground);
- *     }
- *   }
- * );
- */
+seedDB();
 
 // INDEX ROUTE - show all campgrounds
 app.get('/', function(req, res) {
@@ -95,13 +71,17 @@ app.get('/campgrounds/new', function(req, res) {
 // SHOW - shows more info about one campground
 app.get('/campgrounds/:id', function(req, res) {
   // Find the campground with provided id
-  Campground.findById(req.params.id, function(err, foundCampground) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.render('show', {campground: foundCampground});
-    }
-  });
+  Campground.findById(req.params.id)
+    .populate('comments')
+    .exec(function(err, foundCampground) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(foundCampground);
+
+        res.render('show', {campground: foundCampground});
+      }
+    });
 });
 
 app.listen(1234, 'localhost', function() {
