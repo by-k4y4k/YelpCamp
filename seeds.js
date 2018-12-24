@@ -45,7 +45,7 @@ function seedDB() {
           Comment.create(
             {
               author: 'tantan; grumpy',
-              text: 'nice, but no wifi',
+              text: 'no wifi??',
             },
             function(err, comment) {
               if (err) {
