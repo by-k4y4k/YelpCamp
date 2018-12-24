@@ -10,3 +10,5 @@ Built as part of the Web Developer Bootcamp on Udemy.
 ## TODO
 
 - [ ] Cool header image for this readme
+- [ ] CSS => SCSS for styling
+- [ ] Gulp build SCSS
