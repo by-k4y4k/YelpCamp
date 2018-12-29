@@ -1,0 +1,23 @@
+include ../partials/header
+
+div.container
+  header.jumbotron
+    div.container
+      h1 Welcome to YelpCamp
+      p View our hand-picked camping spots from all around the world!
+      p: a.btn.btn-primary.btn-lrg(href="/campgrounds/new") Add New Campground
+        
+  div.row
+    div.col-lg-12
+      h3 Our Most Popular Sites  
+ 
+  div.row.text-center
+  each campground in campgrounds
+     div.col-m-3.col-sm-6
+      div.thumbnail
+        img(src= campground.image ) 
+        div.caption
+          h4 #{campground.name}
+          p: a(href= "/campgrounds/" + campground._id).btn.btn-primary More Info
+
+include ../partials/footer

@@ -18,7 +18,8 @@ mongoose.connect(
   {useNewUrlParser: true}
 );
 
-app.set('view engine', 'ejs');
+// Pug is 1000% less irritating than ejs
+app.set('view engine', 'pug');
 // Any hrefs or links to local files should now resolve to files within public/
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));

@@ -1,0 +1,34 @@
+include ../partials/header
+
+div.container
+  div.row
+    div.col-md-3
+      p.lead YelpCamp
+      div.list-group
+        li.list-group-item.active 1
+        li.list-group-item 2
+        li.list-group-item 3
+
+    div.col-md-9
+      div.thumbnail
+        img(src= campground.image).img-responsive
+        div.caption-full
+          h4.pull-right $9.12/night
+          h4: a #{campground.name}
+          p #{campground.description}
+ 
+      div.well
+        div.text-right
+          a.btn.btn-success(href="/campgrounds/" + campground._id + "/comments/new") Add New Comment
+
+        hr
+
+        each comment in campground.comments
+          div.row
+            div.col-md-12
+              strong #{comment.author} 
+              span.pull-right 10 days ago
+              p #{comment.text}
+ 
+
+include ../partials/footer

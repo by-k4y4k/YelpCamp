@@ -1,0 +1,19 @@
+include ../partials/header
+
+div.container
+  div.row
+    h1(style="text-align: center") Create a New Campground
+    div.form
+      form(action="/campgrounds", method="POST") 
+        div.form-group
+          input.form-control(type="text", name="name", placeholder="name") 
+        div.form-group
+          input.form-control(type="text", name="image", placeholder="image url")           
+        div.form-group
+          input.form-control(type="text", name="description", placeholder="description")      
+        div.form-group
+          button.btn.btn-primary.btn-block.btn-large(type="submit") Submit
+
+      a(href="/campgrounds") Go Back
+
+include ../partials/footer
