@@ -1,16 +1,21 @@
 /*
  * SECTION 30
- * YELPCAMP V2 - ADDING MONGOOSE
+ * YELPCAMP V6 - ADDING AUTHENTICATION WITH PASSPORT
  */
 
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const Campground = require('./models/campground');
 const seedDB = require('./seeds');
 const Comment = require('./models/comment');
+const User = require('./models/user');
+
+// APP CONFIG ==================================================================
 
 // Create the 'yelp_camp' db
 mongoose.connect(
@@ -25,6 +30,23 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
 
 seedDB();
+
+// PASSPORT CONFIG =============================================================
+app.use(
+  require('express-session')({
+    secret: 'Funky funky fresh fab',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// ROUTES ======================================================================
 
 // INDEX ROUTE - show all campgrounds
 app.get('/', function(req, res) {
@@ -86,11 +108,7 @@ app.get('/campgrounds/:id', function(req, res) {
     });
 });
 
-/*
- *==============================================================================
- * COMMENTS ROUTES
- *==============================================================================
- */
+// COMMENTS ROUTES =============================================================
 
 app.get('/campgrounds/:id/comments/new', function(req, res) {
   // Find campground by id
@@ -127,6 +145,34 @@ app.post('/campgrounds/:id/comments', function(req, res) {
     }
   });
 });
+
+// AUTH ROUTES =================================================================
+
+// Show signup form
+app.get('/register', function(req, res) {
+  res.render('register');
+});
+
+// Handle signup logic
+app.post('/register', function(req, res) {
+  // Splitting this to clean up the new User definition a little
+  const newUser = new User({username: req.body.username});
+
+  User.register(newUser, req.body.password, function(err, user) {
+    if (err) {
+      // If there was an error... log it
+      console.log(err);
+      // Then, immediately return the user back to the register form
+      return res.render('register');
+    }
+    // But if everything looks OK: sign us in
+    passport.authenticate('local')(req, res, function() {
+      // Then redirect to the campgrounds index
+      res.redirect('/campgrounds');
+    });
+  });
+});
+ 
 
 app.listen(1234, 'localhost', function() {
   console.log('Listening on http://localhost:1234');
