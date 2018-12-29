@@ -172,7 +172,26 @@ app.post('/register', function(req, res) {
     });
   });
 });
- 
+
+// Show login form
+app.get('/login', function(req, res) {
+  res.render('login');
+});
+
+// Handling login logic
+app.post(
+  '/login',
+  passport.authenticate('local', {
+    successRedirect: '/campgrounds',
+    failureRedirect: '/login',
+  }),
+  function(req, res) {
+    /*
+     * All of the login logic is handled by passport's middleware. Express -
+     * this route - doesn't actually have to do anything.
+     */
+  }
+);
 
 app.listen(1234, 'localhost', function() {
   console.log('Listening on http://localhost:1234');
