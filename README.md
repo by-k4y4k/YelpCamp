@@ -11,4 +11,6 @@ Built as part of the Web Developer Bootcamp on Udemy.
 
 - [ ] Cool header image for this readme
 - [x] CSS => SCSS for styling
-- [x] Gulp build SCSS
+- [x] Gulp build SCSS (now includes Autoprefixer)
+- [x] Gulp compile Bootstrap locally (I wanted to see if I could, and I can)
+- [ ] Concatenate both CSS sheets together
