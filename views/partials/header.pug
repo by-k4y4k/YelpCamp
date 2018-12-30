@@ -1,4 +1,4 @@
-<!DOCTYPE html
+<!DOCTYPE html>
 <html>
   head
     meta(charset="utf-8")
@@ -11,10 +11,16 @@
     nav.navbar.navbar-default
       div.container-fluid
         div.navbar-header
-          a.navbar-brand(href="/") YelpCamp
+          a.navbar-brand(href="/") YelpCamp 
+            if currentUser
+              span - welcome back, #{currentUser.username}
+
         div.collapse.navbar-collapse
           ul.navbar-nav.nav.navbar-right
-            li: a(href="/login") Login
-            li: a(href="/register") Sign up
-            li: a(href="/logout") Logout
+            if !currentUser 
+              li: a(href="/login") Login
+              li: a(href="/register") Sign up
+            else 
+              li: a(href="/logout") Logout
+            
  

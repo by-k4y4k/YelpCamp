@@ -17,21 +17,19 @@ const User = require('./models/user');
 
 // APP CONFIG ==================================================================
 
-// Create the "yelp_camp" db
-mongoose.connect(
-  'mongodb://localhost:27017/yelp_camp',
-  {useNewUrlParser: true}
-);
-
 // Pug is 1000% less irritating than ejs
 app.set('view engine', 'pug');
+
 // Any hrefs or links to local files should now resolve to files within public/
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
+// Middleware that provides every template user details when they're logged in
+app.use(function(req, res, next) {
+  res.locals.currentUser = req.user;
+  next();
+});
 
-seedDB();
-
-// PASSPORT CONFIG =============================================================
+// PASSPORT / AUTH CONFIG ======================================================
 app.use(
   require('express-session')({
     secret: 'Funky funky fresh fab',
@@ -46,9 +44,19 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// INIT ========================================================================
+
+// Create or connect to the "yelp_camp" db
+mongoose.connect(
+  'mongodb://localhost:27017/yelp_camp',
+  {useNewUrlParser: true}
+);
+
+seedDB();
+
 // ROUTES ======================================================================
 
-// INDEX ROUTE - show all campgrounds
+// INDEX ROUTE - the title page
 app.get('/', function(req, res) {
   res.render('landing');
 });
@@ -60,7 +68,10 @@ app.get('/campgrounds', function(req, res) {
       console.log(err);
     } else {
       // Rename campgrounds.ejs to index.ejs to follow REST conventions
-      res.render('campgrounds/index', {campgrounds: allcampgrounds});
+      res.render('campgrounds/index', {
+        campgrounds: allcampgrounds,
+        currentUser: req.user,
+      });
     }
   });
 });
