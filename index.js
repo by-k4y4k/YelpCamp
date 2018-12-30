@@ -17,7 +17,7 @@ const User = require('./models/user');
 
 // APP CONFIG ==================================================================
 
-// Create the 'yelp_camp' db
+// Create the "yelp_camp" db
 mongoose.connect(
   'mongodb://localhost:27017/yelp_camp',
   {useNewUrlParser: true}
@@ -79,8 +79,8 @@ app.post('/campgrounds', function(req, res) {
       console.log(err);
     } else {
       /*
-       * Redirect back to campgrounds page. 'res.redirect' defaults to a GET
-       *request, so there's no issues with the POST route having the same name.
+       * Redirect back to campgrounds page. "res.redirect" defaults to a GET
+       *request, so there"s no issues with the POST route having the same name.
        */
       res.redirect('/campgrounds');
     }
@@ -101,8 +101,6 @@ app.get('/campgrounds/:id', function(req, res) {
       if (err) {
         console.log(err);
       } else {
-        console.log(foundCampground);
-
         res.render('campgrounds/show', {campground: foundCampground});
       }
     });
@@ -110,7 +108,7 @@ app.get('/campgrounds/:id', function(req, res) {
 
 // COMMENTS ROUTES =============================================================
 
-app.get('/campgrounds/:id/comments/new', function(req, res) {
+app.get('/campgrounds/:id/comments/new', isLoggedIn, function(req, res) {
   // Find campground by id
   Campground.findById(req.params.id, function(err, campground) {
     if (err) {
@@ -121,7 +119,7 @@ app.get('/campgrounds/:id/comments/new', function(req, res) {
   });
 });
 
-app.post('/campgrounds/:id/comments', function(req, res) {
+app.post('/campgrounds/:id/comments', isLoggedIn, function(req, res) {
   // Lookup campground using ID
   Campground.findById(req.params.id, function(err, campground) {
     if (err) {
@@ -129,8 +127,6 @@ app.post('/campgrounds/:id/comments', function(req, res) {
       res.redirect('/campgrounds');
     } else {
       // Create new comment
-      console.log(req.body.comment);
-
       Comment.create(req.body.comment, function(err, comment) {
         if (err) {
           console.log(err);
@@ -187,11 +183,37 @@ app.post(
   }),
   function(req, res) {
     /*
-     * All of the login logic is handled by passport's middleware. Express -
-     * this route - doesn't actually have to do anything.
+     * All of the login logic is handled by passport"s middleware. Express -
+     * this route - doesn"t actually have to do anything.
      */
   }
 );
+
+// Logout route
+app.get('/logout', function(req, res) {
+  /*
+   * Logout() comes for free from Passport, where it"s "merged into express"s
+   * Request type"
+   */
+  req.logout();
+  res.redirect('/campgrounds');
+});
+
+/**
+ * Middleware that checks if the user is logged in (authenticated) or not.
+ * @param {*} req The HTML request.
+ * @param {*} res The HTML response.
+ * @param {*} next The middleware, callback, or other thing that is supposed to
+ * run after this middleware.
+ * @return {*} next
+ */
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    res.redirect('/login');
+  }
+}
 
 app.listen(1234, 'localhost', function() {
   console.log('Listening on http://localhost:1234');

@@ -18,6 +18,6 @@ div.container
         img(src= campground.image ) 
         div.caption
           h4 #{campground.name}
-          p: a(href= "/campgrounds/" + campground._id).btn.btn-primary More Info
+          a(href="/campgrounds/" + campground._id).btn.btn-primary More Info
 
 include ../partials/footer
