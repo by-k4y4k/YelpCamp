@@ -7,10 +7,11 @@ It's like Yelp, but for camping sites. Built with NodeJS, Express, mongoDB and a
 
 Built as part of the Web Developer Bootcamp on Udemy.
 
-## TODO
+## TODO:
 
 - [ ] Cool header image for this readme
 - [x] CSS => SCSS for styling
 - [x] Gulp build SCSS (now includes Autoprefixer)
 - [x] Gulp compile Bootstrap locally (I wanted to see if I could, and I can)
 - [ ] Concatenate both CSS sheets together
+- [ ] Clean up the user flow a bit (there's a lot of redirecting to the campgrounds index)
