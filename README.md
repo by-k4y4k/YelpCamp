@@ -15,3 +15,4 @@ Built as part of the Web Developer Bootcamp on Udemy.
 - [x] Gulp compile Bootstrap locally (I wanted to see if I could, and I can)
 - [ ] Concatenate both CSS sheets together
 - [ ] Clean up the user flow a bit (there's a lot of redirecting to the campgrounds index)
+- [ ] **YelpCamp and You**

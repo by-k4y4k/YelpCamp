@@ -10,10 +10,12 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
-const Campground = require('./models/campground');
 const seedDB = require('./seeds');
-const Comment = require('./models/comment');
 const User = require('./models/user');
+
+const commentRoutes = require('./routes/comments');
+const campgroundRoutes = require('./routes/campgrounds');
+const indexRoutes = require('./routes/index');
 
 // APP CONFIG ==================================================================
 
@@ -23,11 +25,6 @@ app.set('view engine', 'pug');
 // Any hrefs or links to local files should now resolve to files within public/
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
-// Middleware that provides every template user details when they're logged in
-app.use(function(req, res, next) {
-  res.locals.currentUser = req.user;
-  next();
-});
 
 // PASSPORT / AUTH CONFIG ======================================================
 app.use(
@@ -44,7 +41,20 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// INIT ========================================================================
+// Middleware that (should) provide every template a username if necessary
+app.use(function(req, res, next) {
+  res.locals.currentUser = req.user;
+  next();
+});
+
+// ROUTES ======================================================================
+app.use('/', indexRoutes);
+// Prepend '/campgrounds' to all routes found inside campgroundRoutes
+app.use('/campgrounds', campgroundRoutes);
+// Similarly, prepend '/campgrounds/:id/comments' to all of these routes
+app.use('/campgrounds/:id/comments', commentRoutes);
+
+// APP INIT ====================================================================
 
 // Create or connect to the "yelp_camp" db
 mongoose.connect(
@@ -53,178 +63,6 @@ mongoose.connect(
 );
 
 seedDB();
-
-// ROUTES ======================================================================
-
-// INDEX ROUTE - the title page
-app.get('/', function(req, res) {
-  res.render('landing');
-});
-
-app.get('/campgrounds', function(req, res) {
-  // Render the campgrounds template, with data from db
-  Campground.find({}, function(err, allcampgrounds) {
-    if (err) {
-      console.log(err);
-    } else {
-      // Rename campgrounds.ejs to index.ejs to follow REST conventions
-      res.render('campgrounds/index', {
-        campgrounds: allcampgrounds,
-        currentUser: req.user,
-      });
-    }
-  });
-});
-
-// CREATE - add new campground to db
-app.post('/campgrounds', function(req, res) {
-  // Get data from form and add to campgrounds array
-  const name = req.body.name;
-  const img = req.body.image;
-  const desc = req.body.description;
-  const newCampground = {name: name, image: img, description: desc};
-
-  // Create a new campground and save to db
-  Campground.create(newCampground, function(err, newlycreated) {
-    if (err) {
-      console.log(err);
-    } else {
-      /*
-       * Redirect back to campgrounds page. "res.redirect" defaults to a GET
-       *request, so there"s no issues with the POST route having the same name.
-       */
-      res.redirect('/campgrounds');
-    }
-  });
-});
-
-// NEW - show form to create new campground
-app.get('/campgrounds/new', function(req, res) {
-  res.render('campgrounds/new');
-});
-
-// SHOW - shows more info about one campground
-app.get('/campgrounds/:id', function(req, res) {
-  // Find the campground with provided id
-  Campground.findById(req.params.id)
-    .populate('comments')
-    .exec(function(err, foundCampground) {
-      if (err) {
-        console.log(err);
-      } else {
-        res.render('campgrounds/show', {campground: foundCampground});
-      }
-    });
-});
-
-// COMMENTS ROUTES =============================================================
-
-app.get('/campgrounds/:id/comments/new', isLoggedIn, function(req, res) {
-  // Find campground by id
-  Campground.findById(req.params.id, function(err, campground) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.render('comments/new', {campground: campground});
-    }
-  });
-});
-
-app.post('/campgrounds/:id/comments', isLoggedIn, function(req, res) {
-  // Lookup campground using ID
-  Campground.findById(req.params.id, function(err, campground) {
-    if (err) {
-      console.log(err);
-      res.redirect('/campgrounds');
-    } else {
-      // Create new comment
-      Comment.create(req.body.comment, function(err, comment) {
-        if (err) {
-          console.log(err);
-        } else {
-          // Connect new comment to campground
-          campground.comments.push(comment);
-          campground.save();
-          // Redirect to campground show page
-          res.redirect('/campgrounds/' + campground._id);
-        }
-      });
-    }
-  });
-});
-
-// AUTH ROUTES =================================================================
-
-// Show signup form
-app.get('/register', function(req, res) {
-  res.render('register');
-});
-
-// Handle signup logic
-app.post('/register', function(req, res) {
-  // Splitting this to clean up the new User definition a little
-  const newUser = new User({username: req.body.username});
-
-  User.register(newUser, req.body.password, function(err, user) {
-    if (err) {
-      // If there was an error... log it
-      console.log(err);
-      // Then, immediately return the user back to the register form
-      return res.render('register');
-    }
-    // But if everything looks OK: sign us in
-    passport.authenticate('local')(req, res, function() {
-      // Then redirect to the campgrounds index
-      res.redirect('/campgrounds');
-    });
-  });
-});
-
-// Show login form
-app.get('/login', function(req, res) {
-  res.render('login');
-});
-
-// Handling login logic
-app.post(
-  '/login',
-  passport.authenticate('local', {
-    successRedirect: '/campgrounds',
-    failureRedirect: '/login',
-  }),
-  function(req, res) {
-    /*
-     * All of the login logic is handled by passport"s middleware. Express -
-     * this route - doesn"t actually have to do anything.
-     */
-  }
-);
-
-// Logout route
-app.get('/logout', function(req, res) {
-  /*
-   * Logout() comes for free from Passport, where it"s "merged into express"s
-   * Request type"
-   */
-  req.logout();
-  res.redirect('/campgrounds');
-});
-
-/**
- * Middleware that checks if the user is logged in (authenticated) or not.
- * @param {*} req The HTML request.
- * @param {*} res The HTML response.
- * @param {*} next The middleware, callback, or other thing that is supposed to
- * run after this middleware.
- * @return {*} next
- */
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    res.redirect('/login');
-  }
-}
 
 app.listen(1234, 'localhost', function() {
   console.log('Listening on http://localhost:1234');
