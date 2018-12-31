@@ -23,6 +23,9 @@ gulp.task('sass', function() {
 /*
  * LESS to compile bootstrap 3.3.7, should only need this once but it's still
  * good practice for writing gulp tasks
+ * TODO: Update to newest Bootstrap
+ * REVIEW: The course has a prior section about Bootstrap: maybe this would be a
+ * good excuse to learn/practise Semantic?
  */
 
 gulp.task('less', function() {

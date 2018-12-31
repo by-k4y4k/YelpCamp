@@ -48,6 +48,8 @@ router.post('/', isLoggedIn, function(req, res) {
   });
 });
 
+// FIXME: isLoggedIn is also defined in routes/campground.js
+
 /**
  * Middleware that checks if the user is logged in (authenticated) or not.
  * @param {*} req The HTML request.

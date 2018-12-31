@@ -1,0 +1,19 @@
+include ../partials/header
+
+div.container
+  div.row
+    h1(style="text-align: center") Edit #{campground.name}
+    div.form
+      form(action="/campgrounds/" + campground._id + "?_method=PUT", method="POST") 
+        div.form-group
+          input.form-control(type="text", name="campground[name]", value=campground.name) 
+        div.form-group
+          input.form-control(type="text", name="campground[image]", value=campground.image)           
+        div.form-group
+          input.form-control(type="text", name="campground[description]", value=campground.description)      
+        div.form-group
+          button.btn.btn-primary.btn-block.btn-large(type="submit") Submit
+
+      a(href="/campgrounds") Go Back
+
+include ../partials/footer

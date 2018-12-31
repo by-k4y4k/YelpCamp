@@ -16,20 +16,17 @@ div.container
           h4.pull-right $9.12/night
           h4: a #{campground.name}
           p #{campground.description}
-          hr
-          p: em Submitted by 
+          p: em Submitted by: 
             if campground.author.username
               campground.author.username
             else
               | a mysterious yet benevolent camper 
-
+          a(href="/campgrounds/" + campground._id + "/edit").btn.btn-warning Edit Campground Details
  
       div.well
         div.text-right
           a.btn.btn-success(href="/campgrounds/" + campground._id + "/comments/new") Add New Comment
-
         hr
-
         each comment in campground.comments
           div.row
             div.col-md-12

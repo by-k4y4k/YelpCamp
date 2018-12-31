@@ -1,6 +1,6 @@
 /*
  * SECTION 30
- * YELPCAMP V6 - ADDING AUTHENTICATION WITH PASSPORT
+ * YELPCAMP V10 - UPDATE AND DESTROY
  */
 
 const express = require('express');
@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const methodOverride = require('method-override');
 
 const seedDB = require('./seeds');
 const User = require('./models/user');
@@ -25,6 +26,7 @@ app.set('view engine', 'pug');
 // Any hrefs or links to local files should now resolve to files within public/
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 
 // PASSPORT / AUTH CONFIG ======================================================
 app.use(
