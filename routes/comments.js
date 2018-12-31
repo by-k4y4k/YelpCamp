@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 const express = require('express');
 /*
  * Without mergeParams, express has opinions about the :id wildcard from
@@ -35,12 +36,8 @@ router.post('/', isLoggedIn, function(req, res) {
           // Associate username and id with new comment
           comment.author.id = req.user._id;
           comment.author.username = req.user.username;
-
-          console.log(comment);
-          
           // Save comment
-          comment.save()
-
+          comment.save();
           campground.comments.push(comment);
           campground.save();
           // Redirect to campground show page

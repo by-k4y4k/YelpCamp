@@ -16,6 +16,13 @@ div.container
           h4.pull-right $9.12/night
           h4: a #{campground.name}
           p #{campground.description}
+          hr
+          p: em Submitted by 
+            if campground.author.username
+              campground.author.username
+            else
+              | a mysterious yet benevolent camper 
+
  
       div.well
         div.text-right

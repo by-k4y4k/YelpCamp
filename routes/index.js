@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
@@ -61,21 +62,5 @@ router.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/campgrounds');
 });
-
-/**
- * Middleware that checks if the user is logged in (authenticated) or not.
- * @param {*} req The HTML request.
- * @param {*} res The HTML response.
- * @param {*} next The middleware, callback, or other thing that is supposed to
- * run after this middleware.
- * @return {*} next
- */
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    res.redirect('/login');
-  }
-}
 
 module.exports = router;
