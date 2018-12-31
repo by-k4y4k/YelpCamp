@@ -18,21 +18,29 @@ div.container
           p #{campground.description}
           p: em Submitted by: 
             if campground.author.username
-              campground.author.username
+              | #{campground.author.username}
             else
               | a mysterious yet benevolent camper 
-          a(href="/campgrounds/" + campground._id + "/edit").btn.btn-warning Edit Campground Details
+
+          if currentUser && campground.author.id.equals(currentUser._id)
+            a(href="/campgrounds/" + campground._id + "/edit").btn.btn-warning Edit This Campground
+            form#delete-button(action="/campgrounds/" + campground._id + "?_method=DELETE", method="POST")
+              button.btn.btn-danger Delete This Campground
  
       div.well
         div.text-right
           a.btn.btn-success(href="/campgrounds/" + campground._id + "/comments/new") Add New Comment
-        hr
+        if campground.comments === undefined || campground.comments.length === 0 
+          p no comments
+        else
+          hr
         each comment in campground.comments
           div.row
             div.col-md-12
               strong #{comment.author.username} 
               span.pull-right 10 days ago
               p #{comment.text}
+ 
  
 
 include ../partials/footer

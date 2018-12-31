@@ -43,7 +43,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Middleware that (should) provide every template a username if necessary
+// Middleware that (should) provide every template a username for the navbar
 app.use(function(req, res, next) {
   res.locals.currentUser = req.user;
   next();
@@ -64,7 +64,8 @@ mongoose.connect(
   {useNewUrlParser: true}
 );
 
-seedDB();
+// eslint-disable-next-line capitalized-comments
+// seedDB();
 
 app.listen(1234, 'localhost', function() {
   console.log('Listening on http://localhost:1234');

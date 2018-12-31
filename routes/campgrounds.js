@@ -25,7 +25,6 @@ router.post('/', isLoggedIn, function(req, res) {
   const img = req.body.image;
   const desc = req.body.description;
   const author = {id: req.user._id, username: req.user.username};
-
   const newCampground = {
     name: name,
     image: img,
@@ -38,8 +37,6 @@ router.post('/', isLoggedIn, function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      console.log('+++NEWLY CREATED CAMPGROUND+++ ' + newlyCreated);
-
       /*
        * Redirect back to campgrounds page. "res.redirect" defaults to a GET
        * request, so there"s no issues with the POST route having the same name.
@@ -63,34 +60,23 @@ router.get('/:id', function(req, res) {
       if (err) {
         console.log(err);
       } else {
+        console.log(foundCampground.comments);
+        
         res.render('campgrounds/show', {campground: foundCampground});
       }
     });
 });
 
 // EDIT CAMPGROUND - show a form
-router.get('/:id/edit', function(req, res) {
-  /*
-   * FIXME: Editing a campground that's not from the seeds file throws an error
-   * that looks like this: 'Cast to ObjectId failed for value "awesome.jpg" at
-   * path "_id" for model "Campground"', even though awesome.jpg comes from the
-   * img link part of the form and shouldn't even touch the id
-   */
-
+router.get('/:id/edit', checkCampgroundOwnership, function(req, res) {
   Campground.findById(req.params.id, function(err, foundCampground) {
-    if (err) {
-      console.log(err);
-      res.redirect('/campgrounds');
-    } else {
-      res.render('campgrounds/edit', {campground: foundCampground});
-    }
+    res.render('campgrounds/edit', {campground: foundCampground});
   });
 });
 
 // UPDATE CAMPGROUND - use form information to change database
-router.put('/:id', function(req, res) {
+router.put('/:id', checkCampgroundOwnership, function(req, res) {
   // Find and update the correct campground
-
   Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(
     err,
     updatedCampground
@@ -100,6 +86,17 @@ router.put('/:id', function(req, res) {
       res.redirect('/campgrounds');
     } else {
       res.redirect('/campgrounds/' + req.params.id);
+    }
+  });
+});
+
+// Destroy campground route
+router.delete('/:id', checkCampgroundOwnership, function(req, res) {
+  Campground.findByIdAndRemove(req.params.id, function(err) {
+    if (err) {
+      res.redirect('/campgrounds');
+    } else {
+      res.redirect('/campgrounds');
     }
   });
 });
@@ -120,9 +117,41 @@ function isLoggedIn(req, res, next) {
   }
 }
 
+/**
+ * Checks to see if the current user has ownership of the campground they are
+ * trying to modify.
+ * @param {*} req The HTML request.
+ * @param {*} res The HTML response.
+ * @param {*} next Whatever is slated to run after this middleware.
+ */
+function checkCampgroundOwnership(req, res, next) {
+  if (req.isAuthenticated()) {
+    // If the user is logged in:
+    Campground.findById(req.params.id, function(err, foundCampground) {
+      if (err) {
+        res.redirect('/campgrounds');
+      } else {
+        // If the campground was found OK by a logged in user:
+        if (foundCampground.author.id.equals(req.user._id)) {
+          // If the logged in user owns the campground they wish to modify:
+          next();
+        } else {
+          console.log('you can\'t edit something you don\'t own');
+          res.redirect('back');
+        }
+      }
+    });
+  } else {
+    console.log('you gotta log in first, kiddo');
+    // If not logged in
+    res.redirect('back');
+  }
+}
+
 /*
  * Because we added all the routes to router instead of app, they can be
  * exported, along with the new instance of the Express Router, through the
  * 'router' var.
  */
+
 module.exports = router;
