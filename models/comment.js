@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
-  author: String,
+  // Associating the user with the comments that they make
+  author: {
+    id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    username: String,
+  },
   text: String,
 });
 

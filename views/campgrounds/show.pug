@@ -11,7 +11,7 @@ div.container
 
     div.col-md-9
       div.thumbnail
-        img(src= campground.image).img-responsive
+        img(src=campground.image).img-responsive
         div.caption-full
           h4.pull-right $9.12/night
           h4: a #{campground.name}
@@ -26,7 +26,7 @@ div.container
         each comment in campground.comments
           div.row
             div.col-md-12
-              strong #{comment.author} 
+              strong #{comment.author.username} 
               span.pull-right 10 days ago
               p #{comment.text}
  

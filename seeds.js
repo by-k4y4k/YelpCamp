@@ -47,7 +47,10 @@ function seedDB() {
           // Then add a few comments to those campgrounds
           Comment.create(
             {
-              author: 'tantan; grumpy',
+              // Updates to the model removed the username: I like looking at it
+              author: {
+                username: 'tantan; grumpy',
+              },
               text: 'no wifi??',
             },
             function(err, comment) {
