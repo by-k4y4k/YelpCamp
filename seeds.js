@@ -44,28 +44,9 @@ function seedDB() {
         } else {
           console.log('added a campground');
 
-          // Then add a few comments to those campgrounds
-          Comment.create(
-            {
-              // Updates to the model removed the username: I like looking at it
-              author: {
-                username: 'tantan; grumpy',
-              },
-              text: 'no wifi??',
-            },
-            function(err, comment) {
-              if (err) {
-                console.log(err);
-              } else {
-                // Add the comment
-                campground.comments.push(comment);
-                // Save the campground with its new comment
-                campground.save();
-
-                console.log('created new comment');
-              }
-            }
-          );
+ 
+          // Save the campground with its new comment
+          campground.save();
         }
       });
     });

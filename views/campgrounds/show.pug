@@ -44,8 +44,9 @@ div.container
 
               p #{comment.text}
 
-              a.btn.btn-xs.btn-warning(href="/campgrounds/" + campground._id + "/comments/" + comment._id + "/edit") Edit
-              form(action="/campgrounds/" + campground._id + "/comments/" + comment._id + "?_method=DELETE", method="POST")#delete-form
-                input(type="submit", value="Delete").btn.btn-xs.btn-danger 
+              if currentUser && comment.author.id.equals(currentUser._id)
+                a.btn.btn-xs.btn-warning(href="/campgrounds/" + campground._id + "/comments/" + comment._id + "/edit") Edit
+                form(action="/campgrounds/" + campground._id + "/comments/" + comment._id + "?_method=DELETE", method="POST")#delete-form
+                  input(type="submit", value="Delete").btn.btn-xs.btn-danger 
 
 include ../partials/footer
