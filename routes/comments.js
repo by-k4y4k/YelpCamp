@@ -48,6 +48,45 @@ router.post('/', isLoggedIn, function(req, res) {
   });
 });
 
+// Edit comment
+router.get('/:comment_id/edit', function(req, res) {
+  Comment.findById(req.params.comment_id, function(err, foundComment) {
+    if (err) {
+      res.redirect('back');
+    } else {
+      res.render('comments/edit', {
+        campground_id: req.params.id,
+        comment: foundComment,
+      });
+    }
+  });
+});
+
+// Update comment
+router.put('/:comment_id', function(req, res) {
+  Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(
+    err,
+    updatedComment
+  ) {
+    if (err) {
+      res.redirect('back');
+    } else {
+      res.redirect('/campgrounds/' + req.params.id);
+    }
+  });
+});
+
+// Delete comment
+router.delete('/:comment_id', function(req, res) {
+  Comment.findByIdAndRemove(req.params.comment_id, function(err) {
+    if (err) {
+      res.redirect('back');
+    } else {
+      res.redirect('/campgrounds/' + req.params.id);
+    }
+  });
+});
+
 // FIXME: isLoggedIn is also defined in routes/campground.js
 
 /**

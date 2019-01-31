@@ -1,0 +1,16 @@
+include ../partials/header
+
+div.container
+  div.row
+    h1(style="text-align: center") Edit Comment  
+    
+    div.form
+      form(action="/campgrounds/" + campground_id + "/comments/" + comment._id + "?_method=PUT", method="POST") 
+        div.form-group
+          input(class="form-control", type="text", name="comment[text]", value=comment.text) 
+        div.form-group
+          button.btn.btn-primary.btn-block.btn-large(type="submit") Submit 
+ 
+      a(href="/campgrounds") Go Back 
+
+include ../partials/footer
