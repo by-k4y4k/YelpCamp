@@ -65,7 +65,7 @@ mongoose.connect(
 );
 
 // eslint-disable-next-line capitalized-comments
-seedDB();
+// seedDB();
 
 app.listen(1234, 'localhost', function() {
   console.log('Listening on http://localhost:1234');

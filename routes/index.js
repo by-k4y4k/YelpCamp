@@ -56,7 +56,7 @@ router.post(
 // Logout route
 router.get('/logout', function(req, res) {
   /*
-   * Logout() comes for free from Passport, where it"s "merged into express"s
+   * Logout() comes for free from Passport, where it"s "merged into express's
    * Request type"
    */
   req.logout();
