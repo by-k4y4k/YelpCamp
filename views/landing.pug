@@ -1,7 +1,25 @@
-include partials/header
+doctype
+html
+  head
+    title YelpCamp
+    link(rel="stylesheet", href="/styles/bootstrap.css")
+    link(rel="stylesheet", href="/styles/landing.css")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js", integrity="sha256-0rguYS0qgS6L4qVzANq4kjxPLtvnp5nn2nB5G1lWRv4=", crossorigin="anonymous") 
+  body
+    div.container
+      if error && error.length > 0
+        div.alert.alert-danger(role="alert")= error 
+      if success && success.length > 0
+        div.alert.alert-success(role="alert")= success
+    
+    div#landing-header
+      h1 Welcome to YelpCamp
+      a(href="/campgrounds").btn.btn-lg.btn-success View All Campgrounds
 
-h1 Landing page 
-p Welcome to YelpCamp!
-a(href="campgrounds") View all campgrounds
+    ul.slideshow
+      li
+      li
+      li
+      li
+      li
 
-include partials/footer

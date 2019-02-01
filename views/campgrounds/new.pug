@@ -12,6 +12,8 @@ div.container
         div.form-group
           input.form-control(type="text", name="description", placeholder="description")      
         div.form-group
+          input.form-control(type="number", name="price", placeholder="price", min="0.01", step="0.01")
+        div.form-group
           button.btn.btn-primary.btn-block.btn-large(type="submit") Submit
 
       a(href="/campgrounds") Go Back

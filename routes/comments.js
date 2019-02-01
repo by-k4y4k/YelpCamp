@@ -16,6 +16,10 @@ router.get('/new', middleware.isLoggedIn, function(req, res) {
     if (err) {
       console.log(err);
     } else {
+      if (!campground) {
+        req.flash('error', 'Item not found.');
+        return res.redirect('back');
+      }
       res.render('comments/new', {campground: campground});
     }
   });
@@ -29,6 +33,10 @@ router.post('/', middleware.isLoggedIn, function(req, res) {
       console.log(err);
       res.redirect('/campgrounds');
     } else {
+      if (!campground) {
+        req.flash('error', 'Item not found.');
+        return res.redirect('back');
+      }
       // Create new comment
       Comment.create(req.body.comment, function(err, comment) {
         if (err) {
@@ -60,6 +68,10 @@ router.get('/:comment_id/edit', middleware.checkCommentOwnership, function(
     if (err) {
       res.redirect('back');
     } else {
+      if (!foundComment) {
+        req.flash('error', 'Item not found.');
+        return res.redirect('back');
+      }
       res.render('comments/edit', {
         campground_id: req.params.id,
         comment: foundComment,
@@ -80,6 +92,10 @@ router.put('/:comment_id', middleware.checkCommentOwnership, function(
     if (err) {
       res.redirect('back');
     } else {
+      if (!updatedComment) {
+        req.flash('error', 'Item not found.');
+        return res.redirect('back');
+      }
       res.redirect('/campgrounds/' + req.params.id);
     }
   });

@@ -12,6 +12,8 @@ div.container
         div.form-group
           input.form-control(type="text", name="campground[description]", value=campground.description)      
         div.form-group
+          input.form-control(type="number", name="campground[price]" value=campground.price )
+        div.form-group
           button.btn.btn-primary.btn-block.btn-large(type="submit") Submit
 
       a(href="/campgrounds") Go Back

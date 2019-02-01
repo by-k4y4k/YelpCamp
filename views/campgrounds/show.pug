@@ -13,7 +13,10 @@ div.container
       div.thumbnail
         img(src=campground.image).img-responsive
         div.caption-full
-          h4.pull-right $9.12/night
+          if !campground.price
+            h4.pull-right= "No price was given for this campsite."
+          else
+            h4.pull-right= "$" + campground.price + "/night"
           h4: a #{campground.name}
           p #{campground.description}
           p: em Submitted by: 

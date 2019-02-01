@@ -25,11 +25,13 @@ router.post('/', middleware.isLoggedIn, function(req, res) {
   const name = req.body.name;
   const img = req.body.image;
   const desc = req.body.description;
+  const price = req.body.price;
   const author = {id: req.user._id, username: req.user.username};
   const newCampground = {
     name: name,
     image: img,
     description: desc,
+    price: price,
     author: author,
   };
 
@@ -42,7 +44,7 @@ router.post('/', middleware.isLoggedIn, function(req, res) {
        * Redirect back to campgrounds page. "res.redirect" defaults to a GET
        * request, so there"s no issues with the POST route having the same name.
        */
-      res.redirect('/');
+      res.redirect('/campgrounds');
     }
   });
 });
@@ -61,6 +63,10 @@ router.get('/:id', function(req, res) {
       if (err) {
         console.log(err);
       } else {
+        if (!foundCampground) {
+          req.flash('error', 'Item not found.');
+          return res.redirect('back');
+        }
         console.log(foundCampground.comments);
 
         res.render('campgrounds/show', {campground: foundCampground});
@@ -74,6 +80,10 @@ router.get('/:id/edit', middleware.checkCampgroundOwnership, function(
   res
 ) {
   Campground.findById(req.params.id, function(err, foundCampground) {
+    if (!foundCampground) {
+      req.flash('error', 'Item not found.');
+      return res.redirect('back');
+    }
     res.render('campgrounds/edit', {campground: foundCampground});
   });
 });
@@ -89,6 +99,10 @@ router.put('/:id', middleware.checkCampgroundOwnership, function(req, res) {
       console.log(err);
       res.redirect('/campgrounds');
     } else {
+      if (!foundCampground) {
+        req.flash('error', 'Item not found.');
+        return res.redirect('back');
+      }
       res.redirect('/campgrounds/' + req.params.id);
     }
   });
@@ -100,6 +114,10 @@ router.delete('/:id', middleware.checkCampgroundOwnership, function(req, res) {
     if (err) {
       res.redirect('/campgrounds');
     } else {
+      if (!foundCampground) {
+        req.flash('error', 'Item not found.');
+        return res.redirect('back');
+      }
       res.redirect('/campgrounds');
     }
   });
