@@ -20,13 +20,12 @@ router.post('/register', function(req, res) {
 
   User.register(newUser, req.body.password, function(err, user) {
     if (err) {
-      // If there was an error... log it
-      console.log(err);
-      // Then, immediately return the user back to the register form
-      return res.render('register');
+      // If there was an error... log it and return to the register form
+      return res.render('register', {error: 'Error: ' + err.message + '.'});
     }
     // But if everything looks OK: sign us in
     passport.authenticate('local')(req, res, function() {
+      req.flash('success', 'Welcome to YelpCamp, ' + user.username);
       // Then redirect to the campgrounds index
       res.redirect('/campgrounds');
     });
@@ -60,6 +59,7 @@ router.get('/logout', function(req, res) {
    * Request type"
    */
   req.logout();
+  req.flash('success', 'Successfully logged out. Come back soon!');
   res.redirect('/campgrounds');
 });
 

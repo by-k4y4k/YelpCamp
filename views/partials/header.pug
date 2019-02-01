@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+doctype
 html
   head
     meta(charset="utf-8")
@@ -22,5 +22,11 @@ html
               li: a(href="/register") Sign up
             else 
               li: a(href="/logout") Logout
-            
- 
+    
+    div.container
+      if error && error.length > 0
+        div.alert.alert-danger= error
+      if success && success.length > 0
+        div.alert.alert-success= success
+      - console.log(error)
+      - console.log(success)

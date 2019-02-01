@@ -1,6 +1,6 @@
 /*
  * SECTION 30
- * YELPCAMP V10 - UPDATE AND DESTROY
+ * YELPCAMP V11 - Flash Messaging
  */
 
 const express = require('express');
@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
 
 const seedDB = require('./seeds');
 const User = require('./models/user');
@@ -27,6 +28,7 @@ app.set('view engine', 'pug');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
+app.use(flash());
 
 // PASSPORT / AUTH CONFIG ======================================================
 app.use(
@@ -46,6 +48,8 @@ passport.deserializeUser(User.deserializeUser());
 // Middleware that (should) provide every template a username for the navbar
 app.use(function(req, res, next) {
   res.locals.currentUser = req.user;
+  res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success');
   next();
 });
 
@@ -59,10 +63,9 @@ app.use('/campgrounds/:id/comments', commentRoutes);
 // APP INIT ====================================================================
 
 // Create or connect to the "yelp_camp" db
-mongoose.connect(
-  'mongodb://localhost:27017/yelp_camp',
-  {useNewUrlParser: true}
-);
+mongoose.connect('mongodb://localhost:27017/yelp_camp', {
+  useNewUrlParser: true,
+});
 
 // eslint-disable-next-line capitalized-comments
 // seedDB();
