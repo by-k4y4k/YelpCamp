@@ -62,12 +62,15 @@ app.use('/campgrounds/:id/comments', commentRoutes);
 
 // APP INIT ====================================================================
 
+const dbURL = process.env.DATABASEURL || 'mongodb://localhost/yelpcamp';
+
 // Create or connect to the "yelp_camp" db
-mongoose.connect('mongodb://localhost:27017/yelp_camp', {
+mongoose.connect(dbURL, {
   useNewUrlParser: true,
 });
 
-
-app.listen(1234, 'localhost', function() {
-  console.log('Listening on http://localhost:1234');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, process.env.IP, () => {
+  console.log(`Running on port ${PORT}`);
+  console.log(process.env.DATABASEURL);
 });
